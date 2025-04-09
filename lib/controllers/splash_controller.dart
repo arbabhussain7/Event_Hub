@@ -1,4 +1,4 @@
-import 'package:event_hub/views/sign_in_screen.dart';
+import 'package:event_hub/views/onboarding_screen.dart';
 import 'package:get/get.dart';
 
 class SplashScreenController extends GetxController {
@@ -8,7 +8,7 @@ class SplashScreenController extends GetxController {
       //   Get.put(OnboardingController());
       // }
 
-      Get.offAll(() => SignInScreen());
+      Get.offAll(() => OnboardingScreen());
     });
   }
 

@@ -16,4 +16,7 @@ class ImageAssets {
   static const String mailImg = 'assets/images/mail-img.png';
   static const String lockImg = 'assets/images/lock-img.png';
   static const String profileImg = 'assets/images/profile-img.png';
+  static const String introOne = 'assets/images/intro-screen-one.png';
+  static const String introTwo = 'assets/images/intro-screen-two.png';
+  static const String introThree = 'assets/images/intro-screen-one.png';
 }

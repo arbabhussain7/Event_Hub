@@ -2,7 +2,6 @@ import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/controllers/textfield_controller.dart';
 import 'package:event_hub/views/bottom_naivgation_bar_screen.dart';
-import 'package:event_hub/views/home_screen.dart';
 import 'package:event_hub/views/reset_passeword_screen.dart';
 import 'package:event_hub/views/sign_out_screen.dart';
 import 'package:event_hub/widgets/custom_button.dart';
