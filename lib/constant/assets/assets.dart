@@ -10,6 +10,10 @@ class ImageAssets {
   static const String eventIcon = 'assets/icons/event-icon.svg';
   static const String mapIcon = 'assets/icons/map-icon.svg';
   static const String profileIcon = 'assets/icons/profile-icon.svg';
+  static const String drawerIcon = 'assets/icons/drawer-icon.svg';
+  static const String msgIcon = 'assets/icons/msg-icon.svg';
+  static const String searchIcon = 'assets/icons/search-icon.svg';
+  static const String locationIcon = 'assets/icons/location-icon.svg';
 
   ///Images
   static const String ticTacToeLogo = 'assets/images/tic-tac-toe-game.png';
@@ -19,4 +23,6 @@ class ImageAssets {
   static const String introOne = 'assets/images/intro-screen-one.png';
   static const String introTwo = 'assets/images/intro-screen-two.png';
   static const String introThree = 'assets/images/intro-screen-one.png';
+  static const String eventImg = 'assets/images/event-img.png';
+  static const String giftImg = 'assets/images/gift-img.png';
 }

@@ -1,7 +1,6 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/views/bottom_naivgation_bar_screen.dart';
-import 'package:event_hub/views/home_screen.dart';
 import 'package:event_hub/views/sign_in_screen.dart';
 import 'package:event_hub/widgets/custom_button.dart';
 import 'package:event_hub/widgets/custom_textfield.dart';

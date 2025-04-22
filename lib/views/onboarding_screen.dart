@@ -18,14 +18,13 @@ class OnboardingScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SizedBox(
-          height: 1.sh, // Use screen height
+          height: 1.sh,
           child: Column(
             children: [
               SizedBox(height: 22.h),
-              // Image section with PageView
               SizedBox(
                 // height: 51.h,
-                height: 0.64.sh, // 45% of screen height
+                height: 0.60.sh,
                 child: PageView.builder(
                   controller: controller.pageController,
                   itemCount: listOfIntroImg.length,
@@ -79,7 +78,7 @@ class OnboardingScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(height: 22.h),
+                        SizedBox(height: 15.h),
                         // Bottom navigation
                         Padding(
                           padding: EdgeInsets.only(bottom: 20.h),
@@ -104,8 +103,8 @@ class OnboardingScreen extends StatelessWidget {
                                 controller: controller.pageController,
                                 count: listOfIntroImg.length,
                                 effect: WormEffect(
-                                  dotHeight: 10.h,
-                                  dotWidth: 10.w,
+                                  dotHeight: 6.h,
+                                  dotWidth: 6.w,
                                   activeDotColor: AppColors.whiteColor,
                                   dotColor:
                                       AppColors.whiteColor.withOpacity(0.5),
