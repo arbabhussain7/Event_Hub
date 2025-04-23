@@ -22,6 +22,11 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: AppColors.whiteColor,
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: AppColors.blueColor,
+              selectionColor: AppColors.blueColor.withOpacity(0.5),
+              selectionHandleColor: AppColors.blueColor,
+            ),
             textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
           ),
           home: SplashScreen(),
