@@ -22,11 +22,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType inputType;
   final String? Function(String?)? validator;
   final TextEditingController controller;
-
-  // Lazy put ensures controller is initialized only when used
   final CustomTextFieldController textFieldController =
       Get.put(CustomTextFieldController(), tag: UniqueKey().toString());
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,9 +32,7 @@ class CustomTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Obx(() {
-        // This ensures the Obx widget is directly tracking the observable
         final isCurrentlyObscured = textFieldController.isObscured.value;
-
         return TextFormField(
           style: GoogleFonts.nunito(
               fontSize: 14.sp,

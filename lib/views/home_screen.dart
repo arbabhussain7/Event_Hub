@@ -1,5 +1,6 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
+import 'package:event_hub/controllers/auth_controller.dart';
 import 'package:event_hub/views/all_events_screen.dart';
 import 'package:event_hub/views/event_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final AuthController controller = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -437,23 +439,28 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 44.h,
               ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    ImageAssets.drawerSignOutIcon,
-                    color: Colors.red,
-                  ),
-                  SizedBox(
-                    width: 9.w,
-                  ),
-                  Text(
-                    'Sign Out',
-                    style: GoogleFonts.nunito(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.blackColor),
-                  )
-                ],
+              GestureDetector(
+                onTap: () {
+                  controller.logout();
+                },
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      ImageAssets.drawerSignOutIcon,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 9.w,
+                    ),
+                    Text(
+                      'Sign Out',
+                      style: GoogleFonts.nunito(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.blackColor),
+                    )
+                  ],
+                ),
               )
             ],
           ),
