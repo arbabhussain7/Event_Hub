@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_hub/constant/colors/colors.dart';
+import 'package:event_hub/models/events_detail_model.dart';
 import 'package:event_hub/views/bottom_naivgation_bar_screen.dart';
 import 'package:event_hub/views/sign_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -106,6 +107,54 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } finally {
       isRegisterLoading(false);
+    }
+  }
+
+  Future<void> addEventToUser(String uid, Event event) async {
+    try {
+      DocumentReference eventDocRef =
+          FirebaseFirestore.instance.collection('events').doc(uid);
+
+      // Create event map
+      Map<String, dynamic> eventMap = {
+        'events_title': event.eventsTitle,
+        'imgUrl': event.imgUrl,
+        'events_date': event.eventsDate,
+        'events_day': event.eventsDay,
+        'events_name': event.eventsName,
+        'address': event.address,
+        'about_events': event.aboutEvents,
+      };
+
+      // First check if the events_data array exists
+      DocumentSnapshot docSnapshot = await eventDocRef.get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> docData =
+            docSnapshot.data() as Map<String, dynamic>;
+
+        if (docData.containsKey('events_data')) {
+          // If array exists, add to it
+          await eventDocRef.update({
+            'events_data': FieldValue.arrayUnion([eventMap])
+          });
+        } else {
+          await eventDocRef.update({
+            'events_data': [eventMap]
+          });
+        }
+      } else {
+        await eventDocRef.set({
+          'Uid': uid,
+          'createdAt': FieldValue.serverTimestamp(),
+          'events_data': [eventMap]
+        });
+      }
+
+      print("Event added successfully!");
+    } catch (e) {
+      print("Error adding event: $e");
+      throw e;
     }
   }
 

@@ -10,8 +10,8 @@ import 'package:image_picker/image_picker.dart';
 class ProfileController extends GetxController {
   final UserController userController = Get.put(UserController());
 
-  RxString ImagePath = "".obs; // Local file path
-  RxString imageUrl = "".obs; // Firebase Storage URL
+  RxString ImagePath = "".obs;
+  RxString imageUrl = "".obs;
   final ImagePicker picker = ImagePicker();
   var isLoading = false.obs;
   RxBool isSelectedOption = false.obs;
@@ -20,11 +20,9 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load existing image URL if available
     loadExistingProfileImage();
   }
 
-  // Load existing profile image when controller initializes
   void loadExistingProfileImage() {
     if (userController.user.isNotEmpty &&
         userController.user['imageUrl'] != null &&
@@ -69,7 +67,6 @@ class ProfileController extends GetxController {
         print("No image to upload");
         return;
       }
-
       User? currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
         print("No authenticated user found");
@@ -77,32 +74,20 @@ class ProfileController extends GetxController {
             "Error", "You must be logged in to upload a profile image");
         return;
       }
-
       String uid = currentUser.uid;
       String fileName = "profile_$uid";
-
-      // Reference to Firebase Storage
       Reference storageRef = FirebaseStorage.instance.ref();
       Reference imageRef = storageRef.child('profile_images/$fileName');
-
       // Upload file
       await imageRef.putFile(File(ImagePath.value));
-
-      // Get download URL
       String downloadUrl = await imageRef.getDownloadURL();
       imageUrl.value = downloadUrl;
-
       print("Image uploaded successfully: $downloadUrl");
-
-      // Update user document in Firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .update({'imageUrl': downloadUrl});
-
-      // Refresh user data
       userController.getUser();
-
       Get.snackbar("Success", "Profile image updated successfully");
     } catch (e) {
       print("Error uploading image: ${e.toString()}");
@@ -115,8 +100,6 @@ class ProfileController extends GetxController {
   Future<void> updateUser() async {
     try {
       isLoading(true);
-
-      // Use existing values if fields are empty
       if (userController.nameController.text.isEmpty) {
         userController.nameController.text = userController.user['name'] ?? '';
       }
@@ -136,8 +119,6 @@ class ProfileController extends GetxController {
         Get.snackbar("Error", "You must be logged in to update your profile");
         return;
       }
-
-      // Update user document
       await FirebaseFirestore.instance
           .collection('users')
           .doc(currentUser.uid)
@@ -146,8 +127,6 @@ class ProfileController extends GetxController {
         'phoneNumber': userController.phoneController.text,
         'email': userController.emailController.text
       });
-
-      // Refresh user data
       userController.getUser();
 
       Get.back();

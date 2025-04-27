@@ -1,19 +1,25 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/controllers/auth_controller.dart';
+import 'package:event_hub/controllers/event_detail_controller.dart';
+import 'package:event_hub/controllers/user_controller.dart';
 import 'package:event_hub/views/all_events_screen.dart';
 import 'package:event_hub/views/event_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final AuthController controller = Get.put(AuthController());
+  final EventDetailController eventsController =
+      Get.put(EventDetailController());
+  final UserController userController = Get.put(UserController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,88 +154,152 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               height: 33.h,
             ),
-            SizedBox(
-              height: 255.h,
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(() => EventDetailScreen());
-                },
-                child: ListView.separated(
-                  itemCount: 5,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Stack(
+            Obx(() {
+              if (eventsController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (eventsController.events.isEmpty) {
+                return const Center(child: Text('No events available'));
+              } else {
+                return SizedBox(
+                  height: 255.h,
+                  child: ListView.separated(
+                    itemCount: eventsController.events.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final event = eventsController.events[index];
+                      // Parse the event date to extract day and month
+                      String day = '';
+                      String month = '';
+                      try {
+                        final dateFormat = DateFormat('dd MMMM yyyy');
+                        final date = dateFormat.parse(event.eventsDate);
+                        day = DateFormat('dd').format(date);
+                        month = DateFormat('MMM').format(date).toUpperCase();
+                      } catch (e) {
+                        final parts = event.eventsDate.split(' ');
+                        if (parts.length >= 2) {
+                          day = parts[0];
+                          month = parts[1].toUpperCase();
+                        }
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          eventsController.setSelectedEvent(event);
+                          Get.to(() => EventDetailScreen());
+                        },
+                        child: Column(
                           children: [
-                            Image.asset(
-                              ImageAssets.eventImg,
-                              width: 250.w,
-                              height: 150.h,
-                            ),
-                            Positioned(
-                              left: 12.w,
-                              top: 7.h,
-                              child: Container(
-                                padding: EdgeInsets.all(8.r),
-                                decoration: BoxDecoration(
-                                    color: AppColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(12.r)),
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: '10\n',
-                                      style: GoogleFonts.nunito(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w800,
-                                          color: AppColors.orangeColor),
-                                      children: [
-                                        TextSpan(
-                                            text: 'JUNE',
-                                            style: GoogleFonts.nunito(
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: AppColors.orangeColor)),
-                                      ]),
+                            Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  child: event.imgUrl.isNotEmpty
+                                      ? Image.network(
+                                          event.imgUrl,
+                                          width: 250.w,
+                                          height: 150.h,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              ImageAssets.eventImg,
+                                              width: 250.w,
+                                              height: 150.h,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        )
+                                      : Image.asset(
+                                          ImageAssets.eventImg,
+                                          width: 250.w,
+                                          height: 150.h,
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
+                                Positioned(
+                                  left: 12.w,
+                                  top: 7.h,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.r),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.whiteColor,
+                                        borderRadius:
+                                            BorderRadius.circular(12.r)),
+                                    child: RichText(
+                                      text: TextSpan(
+                                          text: '$day\n',
+                                          style: GoogleFonts.nunito(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.orangeColor),
+                                          children: [
+                                            TextSpan(
+                                                text: month,
+                                                style: GoogleFonts.nunito(
+                                                    fontSize: 10.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color:
+                                                        AppColors.orangeColor)),
+                                          ]),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 22.h,
+                            ),
+                            SizedBox(
+                              width: 250.w,
+                              child: Text(
+                                event.eventsTitle,
+                                style: GoogleFonts.nunito(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.blackColor),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
+                            ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(ImageAssets.locationIcon),
+                                SizedBox(
+                                  width: 5.w,
+                                ),
+                                SizedBox(
+                                  width: 225.w,
+                                  child: Text(
+                                    event.address,
+                                    style: GoogleFonts.nunito(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.bBlackColor),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              ],
                             )
                           ],
                         ),
-                        SizedBox(
-                          height: 22.h,
-                        ),
-                        Text(
-                          'International Band Mu...',
-                          style: GoogleFonts.nunito(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.blackColor),
-                        ),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        Row(
-                          children: [
-                            SvgPicture.asset(ImageAssets.locationIcon),
-                            Text(
-                              '36 Globla Green Islamabad',
-                              style: GoogleFonts.nunito(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.bBlackColor),
-                            )
-                          ],
-                        )
-                      ],
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      width: 22.w,
-                    );
-                  },
-                ),
-              ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        width: 22.w,
+                      );
+                    },
+                  ),
+                );
+              }
+            }),
+            SizedBox(
+              height: 20.h,
             ),
             Container(
               width: 328.w,
@@ -299,19 +369,40 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 66.h,
               ),
-              CircleAvatar(
-                maxRadius: 44.sp,
-                backgroundImage: AssetImage(ImageAssets.thirdImg),
-              ),
+              userController.isLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: AppColors.blueColor,
+                    ))
+                  : Column(children: [
+                      CircleAvatar(
+                        maxRadius: 48,
+                        backgroundColor: Colors.grey.shade300,
+                        backgroundImage: userController.user.isNotEmpty &&
+                                userController.user["imageUrl"] != null &&
+                                userController.user["imageUrl"]
+                                    .toString()
+                                    .isNotEmpty
+                            ? NetworkImage(userController.user["imageUrl"])
+                            : const AssetImage("assets/images/profile-img.png")
+                                as ImageProvider,
+                        onBackgroundImageError: (exception, stackTrace) {
+                          print("Error loading profile image: $exception");
+                        },
+                      ),
+                    ]),
               SizedBox(
                 height: 6.h,
               ),
               Text(
-                'Ashfak Sayem',
+                userController.user.isNotEmpty &&
+                        userController.user["name"] != null
+                    ? userController.user["name"]
+                    : "No Name",
                 style: GoogleFonts.nunito(
-                    fontSize: 19.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.blackColor),
+                    fontSize: 21.sp,
+                    color: AppColors.blackColor,
+                    fontWeight: FontWeight.w600),
               ),
               SizedBox(
                 height: 55.h,
@@ -457,11 +548,11 @@ class HomeScreen extends StatelessWidget {
                       style: GoogleFonts.nunito(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.blackColor),
+                          color: Colors.red),
                     )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
