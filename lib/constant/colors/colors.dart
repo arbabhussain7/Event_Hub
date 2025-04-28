@@ -15,6 +15,7 @@ class AppColors {
   static const Color acyanColor = Color(0xffABC2EB);
   static const Color cyanColor = Color(0xff00F8FF);
   static const Color bGreyColor = Color(0xff484D70);
+  static const Color redColor = Color(0xffFF0000);
 
   //_________________gradient colors________________
   static const Color gradientColor1 = Color(0xFF6F5CEA);

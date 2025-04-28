@@ -1,18 +1,42 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
+import 'package:event_hub/controllers/event_detail_controller.dart';
 import 'package:event_hub/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EventDetailScreen extends StatelessWidget {
-  const EventDetailScreen({super.key});
+  EventDetailScreen({super.key});
+  final EventDetailController eventsController =
+      Get.find<EventDetailController>();
 
   @override
   Widget build(BuildContext context) {
+    final event = eventsController.selectedEvent.value;
+    if (event == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Event Details',
+            style: GoogleFonts.nunito(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.whiteColor),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Get.back(),
+          ),
+        ),
+        body: Center(
+          child: Text('No event selected'),
+        ),
+      );
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(children: [
@@ -21,9 +45,14 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 height: 244.h,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(ImageAssets.eventImgs))),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: event.imgUrl.isNotEmpty
+                        ? NetworkImage(event.imgUrl) as ImageProvider
+                        : AssetImage(ImageAssets.eventImgs),
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 child: Padding(
                   padding: EdgeInsets.only(top: 39.h, left: 12.w, right: 12.w),
                   child: Align(
@@ -140,7 +169,7 @@ class EventDetailScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 18.w),
             child: Text(
-              'International Band Music Concert',
+              event.eventsTitle,
               style: GoogleFonts.nunito(
                   fontSize: 35.sp,
                   fontWeight: FontWeight.w400,
@@ -168,7 +197,7 @@ class EventDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '14 December, 2021',
+                      event.eventsDate,
                       style: GoogleFonts.nunito(
                           fontSize: 16.sp,
                           color: AppColors.blackColor,
@@ -178,7 +207,7 @@ class EventDetailScreen extends StatelessWidget {
                       height: 4.h,
                     ),
                     Text(
-                      'Tuesday, 4:00PM - 9:00PM',
+                      event.eventsDay,
                       style: GoogleFonts.nunito(
                           fontSize: 12.sp,
                           color: AppColors.greyColor,
@@ -210,7 +239,7 @@ class EventDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gala Convention Center',
+                      event.eventsName,
                       style: GoogleFonts.nunito(
                           fontSize: 16.sp,
                           color: AppColors.blackColor,
@@ -220,7 +249,7 @@ class EventDetailScreen extends StatelessWidget {
                       height: 4.h,
                     ),
                     Text(
-                      '36 Street Golberg Green Islamabad',
+                      event.address,
                       style: GoogleFonts.nunito(
                           fontSize: 12.sp,
                           color: AppColors.greyColor,
@@ -251,7 +280,7 @@ class EventDetailScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                'Hi! I want to build a website where mortgage brokers enter a property address and LTV, and the site shows a list of lenders who service that area and accept that LTV. I will provide all the lender data. The design should be dark-themed (black background, lime green + red accents), and it should show a map of the address entered. There should also be an admin panel for me to add/edit lender data. Can you do this, and how long would it take?',
+                event.aboutEvents,
                 style: GoogleFonts.nunito(
                     fontSize: 16.sp, color: AppColors.blackColor),
               ),
