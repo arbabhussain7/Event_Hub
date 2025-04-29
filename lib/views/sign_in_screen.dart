@@ -1,6 +1,7 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/controllers/auth_controller.dart';
+import 'package:event_hub/views/reset_passeword_screen.dart';
 import 'package:event_hub/views/sign_out_screen.dart';
 import 'package:event_hub/widgets/custom_button.dart';
 import 'package:event_hub/widgets/custom_textfield.dart';
@@ -88,12 +89,17 @@ class SignInScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot password?',
-                        style: GoogleFonts.nunito(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blueColor),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const ResetPassewordScreen());
+                        },
+                        child: Text(
+                          'Forgot password?',
+                          style: GoogleFonts.nunito(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.blueColor),
+                        ),
                       ),
                     ],
                   ),

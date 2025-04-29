@@ -13,6 +13,8 @@ class AuthController extends GetxController {
   var isRegisterLoading = false.obs;
   var isLoginLoading = false.obs;
   var isGoogleLoading = false.obs;
+  final forgotPasswordEmailController = TextEditingController();
+  final isResetLoading = false.obs;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -41,8 +43,6 @@ class AuthController extends GetxController {
             ));
         return;
       }
-
-      // Only set register loading to true
       isRegisterLoading(true);
 
       var credentials = await auth.createUserWithEmailAndPassword(
@@ -204,6 +204,45 @@ class AuthController extends GetxController {
           ));
     } finally {
       isLoginLoading(false);
+    }
+  }
+
+// Add this method to the AuthController class
+  Future<void> sendPasswordResetEmail() async {
+    try {
+      isResetLoading.value = true;
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: forgotPasswordEmailController.text.trim(),
+      );
+      Get.snackbar(
+        'Success',
+        'Password reset link sent to your email',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      Get.back(); // Go back to sign in screen
+    } on FirebaseAuthException catch (e) {
+      String message = 'An error occurred';
+      if (e.code == 'user-not-found') {
+        message = 'No user found with this email';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email format';
+      }
+      Get.snackbar(
+        'Error',
+        message,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to send password reset email',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isResetLoading.value = false;
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/controllers/auth_controller.dart';
 import 'package:event_hub/controllers/event_detail_controller.dart';
+import 'package:event_hub/controllers/home_controller.dart';
 import 'package:event_hub/controllers/user_controller.dart';
 import 'package:event_hub/views/all_events_screen.dart';
 import 'package:event_hub/views/event_detail_screen.dart';
@@ -15,10 +16,13 @@ import 'package:intl/intl.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final AuthController controller = Get.put(AuthController());
+  final AuthController authController = Get.put(AuthController());
   final EventDetailController eventsController =
       Get.put(EventDetailController());
   final UserController userController = Get.put(UserController());
+
+  // Initialize the new HomeController
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +87,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(
                       height: 22.h,
                     ),
+                    // Updated search bar with HomeController
                     Row(
                       children: [
                         SvgPicture.asset(ImageAssets.searchIcon),
@@ -100,6 +105,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: TextFormField(
+                            controller: homeController.searchController,
                             keyboardType: TextInputType.text,
                             style: GoogleFonts.nunito(
                                 fontSize: 18.sp,
@@ -113,6 +119,55 @@ class HomeScreen extends StatelessWidget {
                                     color:
                                         AppColors.aWhiteColor.withOpacity(0.4)),
                                 border: InputBorder.none),
+                            onChanged: (value) {
+                              homeController.performSearch(
+                                  value, eventsController.events);
+                            },
+                            onFieldSubmitted: (value) {
+                              if (value.isNotEmpty) {
+                                Get.to(() => AllEventsScreen(
+                                      initialSearchQuery: value,
+                                    ));
+                              }
+                            },
+                          ),
+                        ),
+                        // Clear button when searching
+                        Obx(() => homeController.isSearching.value
+                            ? GestureDetector(
+                                onTap: () {
+                                  homeController.clearSearch();
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  color: AppColors.whiteColor,
+                                  size: 20.sp,
+                                ),
+                              )
+                            : const SizedBox.shrink()),
+                        SizedBox(width: 8.w),
+                        // Search button
+                        GestureDetector(
+                          onTap: () {
+                            if (homeController
+                                .searchController.text.isNotEmpty) {
+                              Get.to(() => AllEventsScreen(
+                                    initialSearchQuery:
+                                        homeController.searchController.text,
+                                  ));
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8.r),
+                            decoration: BoxDecoration(
+                              color: AppColors.aWhiteColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Icon(
+                              Icons.search,
+                              color: AppColors.whiteColor,
+                              size: 20.sp,
+                            ),
                           ),
                         ),
                       ],
@@ -121,241 +176,11 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: 33.h,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Upcoming Events',
-                    style: GoogleFonts.nunito(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.blackColor),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => AllEventsScreen());
-                    },
-                    child: Text(
-                      'See All',
-                      style: GoogleFonts.nunito(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.greyColor),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 33.h,
-            ),
-            Obx(() {
-              if (eventsController.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (eventsController.events.isEmpty) {
-                return const Center(child: Text('No events available'));
-              } else {
-                return SizedBox(
-                  height: 255.h,
-                  child: ListView.separated(
-                    itemCount: eventsController.events.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final event = eventsController.events[index];
-                      // Parse the event date to extract day and month
-                      String day = '';
-                      String month = '';
-                      try {
-                        final dateFormat = DateFormat('dd MMMM yyyy');
-                        final date = dateFormat.parse(event.eventsDate);
-                        day = DateFormat('dd').format(date);
-                        month = DateFormat('MMM').format(date).toUpperCase();
-                      } catch (e) {
-                        final parts = event.eventsDate.split(' ');
-                        if (parts.length >= 2) {
-                          day = parts[0];
-                          month = parts[1].toUpperCase();
-                        }
-                      }
 
-                      return GestureDetector(
-                        onTap: () {
-                          eventsController.setSelectedEvent(event);
-                          Get.to(() => EventDetailScreen());
-                        },
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  child: event.imgUrl.isNotEmpty
-                                      ? Image.network(
-                                          event.imgUrl,
-                                          width: 250.w,
-                                          height: 150.h,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              ImageAssets.eventImg,
-                                              width: 250.w,
-                                              height: 150.h,
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
-                                        )
-                                      : Image.asset(
-                                          ImageAssets.eventImg,
-                                          width: 250.w,
-                                          height: 150.h,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                Positioned(
-                                  left: 12.w,
-                                  top: 7.h,
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.r),
-                                    decoration: BoxDecoration(
-                                        color: AppColors.whiteColor,
-                                        borderRadius:
-                                            BorderRadius.circular(12.r)),
-                                    child: RichText(
-                                      text: TextSpan(
-                                          text: '$day\n',
-                                          style: GoogleFonts.nunito(
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.w800,
-                                              color: AppColors.orangeColor),
-                                          children: [
-                                            TextSpan(
-                                                text: month,
-                                                style: GoogleFonts.nunito(
-                                                    fontSize: 10.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color:
-                                                        AppColors.orangeColor)),
-                                          ]),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 22.h,
-                            ),
-                            SizedBox(
-                              width: 250.w,
-                              child: Text(
-                                event.eventsTitle,
-                                style: GoogleFonts.nunito(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.blackColor),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Row(
-                              children: [
-                                SvgPicture.asset(ImageAssets.locationIcon),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
-                                SizedBox(
-                                  width: 225.w,
-                                  child: Text(
-                                    event.address,
-                                    style: GoogleFonts.nunito(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.bBlackColor),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        width: 22.w,
-                      );
-                    },
-                  ),
-                );
-              }
-            }),
-            SizedBox(
-              height: 20.h,
-            ),
-            Container(
-              width: 328.w,
-              height: 127.h,
-              padding: EdgeInsets.all(18.r),
-              decoration: BoxDecoration(
-                  color: AppColors.cyanColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12.r)),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Invite your friends',
-                        style: GoogleFonts.nunito(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.blackColor),
-                      ),
-                      SizedBox(
-                        height: 6.h,
-                      ),
-                      Text(
-                        'Get \$20 for ticket',
-                        style: GoogleFonts.nunito(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.bGreyColor),
-                      ),
-                      SizedBox(
-                        height: 6.h,
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 18.w, vertical: 9.h),
-                        decoration: BoxDecoration(
-                            color: AppColors.cyanColor,
-                            borderRadius: BorderRadius.circular(7.r)),
-                        child: Text(
-                          'INVITE',
-                          style: GoogleFonts.nunito(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.whiteColor),
-                        ),
-                      )
-                    ],
-                  ),
-                  Image.asset(
-                    ImageAssets.giftImg,
-                    width: 141.w,
-                  )
-                ],
-              ),
-            )
+            // Show search results when searching
+            Obx(() => homeController.isSearching.value
+                ? _buildSearchResults()
+                : _buildRegularContent()),
           ],
         ),
       ),
@@ -532,7 +357,7 @@ class HomeScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  controller.logout();
+                  authController.logout();
                 },
                 child: Row(
                   children: [
@@ -557,6 +382,433 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // Method to build search results
+  Widget _buildSearchResults() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Search Results',
+                style: GoogleFonts.nunito(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.blackColor,
+                ),
+              ),
+              Text(
+                '${homeController.searchResults.length} found',
+                style: GoogleFonts.nunito(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.greyColor,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+          Obx(() => homeController.searchResults.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 40.h),
+                      Icon(
+                        Icons.search_off,
+                        size: 48.sp,
+                        color: AppColors.greyColor,
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        'No events match your search',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.greyColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: homeController.searchResults.length > 4
+                      ? 4
+                      : homeController.searchResults.length,
+                  itemBuilder: (context, index) {
+                    final event = homeController.searchResults[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        eventsController.setSelectedEvent(event);
+                        Get.to(() => EventDetailScreen());
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.aWhiteColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.r),
+                              child: event.imgUrl.isNotEmpty
+                                  ? Image.network(
+                                      event.imgUrl,
+                                      width: 80.w,
+                                      height: 80.h,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          ImageAssets.eventImg,
+                                          width: 80.w,
+                                          height: 80.h,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      ImageAssets.eventImg,
+                                      width: 80.w,
+                                      height: 80.h,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    event.eventsTitle,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.blackColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    event.eventsName,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.aBlueColor,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        ImageAssets.locationIcon,
+                                        height: 12.h,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Expanded(
+                                        child: Text(
+                                          event.address,
+                                          style: GoogleFonts.nunito(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.greyColor,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                )),
+
+          // View all button if there are more than 4 results
+          Obx(() => homeController.searchResults.length > 4
+              ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => AllEventsScreen(
+                              initialSearchQuery:
+                                  homeController.searchController.text,
+                            ));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 24.w, vertical: 10.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.blueColor,
+                          borderRadius: BorderRadius.circular(22.r),
+                        ),
+                        child: Text(
+                          'View All Results',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink()),
+        ],
+      ),
+    );
+  }
+
+  // Method to build regular content (when not searching)
+  Widget _buildRegularContent() {
+    return Column(
+      children: [
+        SizedBox(height: 33.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Upcoming Events',
+                style: GoogleFonts.nunito(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.blackColor),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => AllEventsScreen());
+                },
+                child: Text(
+                  'See All',
+                  style: GoogleFonts.nunito(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.greyColor),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 33.h),
+        Obx(() {
+          if (eventsController.isLoading.value) {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: AppColors.blueColor,
+            ));
+          } else if (eventsController.events.isEmpty) {
+            return const Center(child: Text('No events available'));
+          } else {
+            return SizedBox(
+              height: 255.h,
+              child: ListView.separated(
+                itemCount: eventsController.events.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final event = eventsController.events[index];
+                  // Parse the event date to extract day and month
+                  String day = '';
+                  String month = '';
+                  try {
+                    final dateFormat = DateFormat('dd MMMM yyyy');
+                    final date = dateFormat.parse(event.eventsDate);
+                    day = DateFormat('dd').format(date);
+                    month = DateFormat('MMM').format(date).toUpperCase();
+                  } catch (e) {
+                    final parts = event.eventsDate.split(' ');
+                    if (parts.length >= 2) {
+                      day = parts[0];
+                      month = parts[1].toUpperCase();
+                    }
+                  }
+
+                  return GestureDetector(
+                    onTap: () {
+                      eventsController.setSelectedEvent(event);
+                      Get.to(() => EventDetailScreen());
+                    },
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: event.imgUrl.isNotEmpty
+                                  ? Image.network(
+                                      event.imgUrl,
+                                      width: 250.w,
+                                      height: 150.h,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          ImageAssets.eventImg,
+                                          width: 250.w,
+                                          height: 150.h,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      ImageAssets.eventImg,
+                                      width: 250.w,
+                                      height: 150.h,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            Positioned(
+                              left: 12.w,
+                              top: 7.h,
+                              child: Container(
+                                padding: EdgeInsets.all(8.r),
+                                decoration: BoxDecoration(
+                                    color: AppColors.whiteColor,
+                                    borderRadius: BorderRadius.circular(12.r)),
+                                child: RichText(
+                                  text: TextSpan(
+                                      text: '$day\n',
+                                      style: GoogleFonts.nunito(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.orangeColor),
+                                      children: [
+                                        TextSpan(
+                                            text: month,
+                                            style: GoogleFonts.nunito(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.orangeColor)),
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 22.h),
+                        SizedBox(
+                          width: 250.w,
+                          child: Text(
+                            event.eventsTitle,
+                            style: GoogleFonts.nunito(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.blackColor),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        Row(
+                          children: [
+                            SvgPicture.asset(ImageAssets.locationIcon),
+                            SizedBox(width: 5.w),
+                            SizedBox(
+                              width: 225.w,
+                              child: Text(
+                                event.address,
+                                style: GoogleFonts.nunito(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.bBlackColor),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(width: 22.w);
+                },
+              ),
+            );
+          }
+        }),
+        SizedBox(height: 20.h),
+        // Updated invite container with the share functionality
+        Container(
+          width: 328.w,
+          height: 127.h,
+          padding: EdgeInsets.all(18.r),
+          decoration: BoxDecoration(
+              color: AppColors.cyanColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.r)),
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Invite your friends',
+                    style: GoogleFonts.nunito(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blackColor),
+                  ),
+                  SizedBox(height: 6.h),
+                  Text(
+                    'Grow your circle.',
+                    style: GoogleFonts.nunito(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.bGreyColor),
+                  ),
+                  SizedBox(height: 6.h),
+                  // Updated INVITE button with share functionality
+                  GestureDetector(
+                    onTap: () {
+                      homeController.shareApp();
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 18.w, vertical: 9.h),
+                      decoration: BoxDecoration(
+                          color: AppColors.cyanColor,
+                          borderRadius: BorderRadius.circular(7.r)),
+                      child: Text(
+                        'INVITE',
+                        style: GoogleFonts.nunito(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.whiteColor),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Image.asset(
+                ImageAssets.giftImg,
+                width: 141.w,
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }
