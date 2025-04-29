@@ -51,6 +51,20 @@ dependencies:
   external_path: ^2.2.0
   permission_handler: ^12.0.0+1
   path_provider: ^2.1.5
+  share_plus: ^11.0.0
+  # flutter_polyline_points: ^2.1.0
+  # latlong2: ^0.9.1
+  # flutter_map: ^8.1.1
+  # flutter_map_location_marker: ^10.1.0
+  # location: ^8.0.0
+  # http: ^1.3.0
+  # flutter_polyline_points: 
+  # google_maps_flutter: 
+  # location: 
+  # geolocator: 
+  # flutter_map_location_marker: 
+  # latlong2: 
+  # flutter_map: 
 
 dev_dependencies:
   flutter_test:

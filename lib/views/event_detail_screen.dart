@@ -143,18 +143,24 @@ class EventDetailScreen extends StatelessWidget {
                         Icons.abc_sharp,
                         color: Colors.transparent,
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15.w, vertical: 6.h),
-                        decoration: BoxDecoration(
-                            color: AppColors.blueColor,
-                            borderRadius: BorderRadius.circular(7.r)),
-                        child: Text(
-                          'Invite',
-                          style: GoogleFonts.nunito(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.whiteColor),
+                      // Updated Invite button with share functionality
+                      GestureDetector(
+                        onTap: () {
+                          eventsController.shareEvent();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 6.h),
+                          decoration: BoxDecoration(
+                              color: AppColors.blueColor,
+                              borderRadius: BorderRadius.circular(7.r)),
+                          child: Text(
+                            'Invite',
+                            style: GoogleFonts.nunito(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.whiteColor),
+                          ),
                         ),
                       )
                     ],

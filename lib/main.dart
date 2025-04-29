@@ -1,13 +1,9 @@
-import 'dart:io';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/views/splash_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,326 +11,374 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(375, 812),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (_, child) {
-          return GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Event Hub',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              scaffoldBackgroundColor: AppColors.whiteColor,
-              textSelectionTheme: TextSelectionThemeData(
-                cursorColor: AppColors.blueColor,
-                selectionColor: AppColors.blueColor.withOpacity(0.5),
-                selectionHandleColor: AppColors.blueColor,
-              ),
-              textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Event Hub',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: AppColors.whiteColor,
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: AppColors.blueColor,
+              selectionColor: AppColors.blueColor.withOpacity(0.5),
+              selectionHandleColor: AppColors.blueColor,
             ),
-            home: SplashScreen(),
-          );
-        });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    requestPermissions();
-  }
-
-  Future<void> requestPermissions() async {
-    if (Platform.isAndroid) {
-      await [
-        Permission.storage,
-        Permission.manageExternalStorage,
-        Permission.mediaLibrary, // optional but helps
-      ].request();
-
-      if (await Permission.manageExternalStorage.request().isGranted) {
-        print("Manage External Storage permission granted");
-      } else {
-        openAppSettings(); // open settings if denied
-        // setState(() {
-        //   errorMessage =
-        //       "Storage permission denied. Please enable it from settings.";
-        // });
-      }
-    } else if (Platform.isIOS) {
-      if (await Permission.photos.request().isGranted) {
-        print("Photos permission granted");
-      } else {
-        // setState(() {
-        //   errorMessage = "Photos permission denied";
-        // });
-      }
-    }
+            textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+          ),
+          home: SplashScreen(),
+        );
+      },
+    );
   }
 }
 
-class ImageUploadScreen extends StatefulWidget {
-  const ImageUploadScreen({super.key});
+// import 'dart:io';
+// import 'package:event_hub/constant/colors/colors.dart';
+// import 'package:event_hub/views/splash_screen.dart';
+// import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:get/get_navigation/src/root/get_material_app.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
-  @override
-  _ImageUploadScreenState createState() => _ImageUploadScreenState();
-}
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//   runApp(const MyApp());
+// }
 
-class _ImageUploadScreenState extends State<ImageUploadScreen> {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<File> imageFiles = [];
-  List<String> uploadedUrls = [];
-  bool isLoading = false;
-  String? errorMessage;
-  int uploadProgress = 0;
-  int totalImages = 0;
-  bool isUploading = false;
-  bool isCancelled = false;
+// class MyApp extends StatefulWidget {
+//   const MyApp({super.key});
 
-  // Configuration for chunked uploads
-  static const int CHUNK_SIZE = 500; // Process 5 images at a time
-  static const int DELAY_BETWEEN_CHUNKS = 1000; // 1 second delay between chunks
-  @override
-  void initState() {
-    super.initState();
-    requestPermissions(); // If this is async, consider awaiting it inside the new method
-    _initAsync();
-  }
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
 
-  Future<void> _initAsync() async {
-    await fetchImagesFromDevice();
-    if (imageFiles.isNotEmpty) {
-      await uploadImagesToFirebase();
-    }
-  }
+// class _MyAppState extends State<MyApp> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: const Size(375, 812),
+//       minTextAdapt: true,
+//       splitScreenMode: true,
+//       builder: (_, child) {
+//         return GetMaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           title: 'Event Hub',
+//           theme: ThemeData(
+//             primarySwatch: Colors.blue,
+//             scaffoldBackgroundColor: AppColors.whiteColor,
+//             textSelectionTheme: TextSelectionThemeData(
+//               cursorColor: AppColors.blueColor,
+//               selectionColor: AppColors.blueColor.withOpacity(0.5),
+//               selectionHandleColor: AppColors.blueColor,
+//             ),
+//             textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+//           ),
+//           home: ImageUploadScreen(),
+//         );
+//       },
+//     );
+//   }
 
-  Future<void> fetchImagesFromDevice() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-      imageFiles.clear();
-    });
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     requestPermissions();
+//   }
 
-    try {
-      final rootDir = Directory('/storage/emulated/0');
+//   Future<void> requestPermissions() async {
+//     if (Platform.isAndroid) {
+//       await [
+//         Permission.storage,
+//         Permission.manageExternalStorage,
+//         Permission.mediaLibrary, // optional but helps
+//       ].request();
 
-      if (await rootDir.exists()) {
-        await _scanDirectory(rootDir);
-      } else {
-        setState(() {
-          errorMessage = "Directory /storage/emulated/0 not accessible";
-          isLoading = false;
-        });
-        return;
-      }
+//       if (await Permission.manageExternalStorage.request().isGranted) {
+//         print("Manage External Storage permission granted");
+//       } else {
+//         openAppSettings(); // open settings if denied
+//         // setState(() {
+//         //   errorMessage =
+//         //       "Storage permission denied. Please enable it from settings.";
+//         // });
+//       }
+//     } else if (Platform.isIOS) {
+//       if (await Permission.photos.request().isGranted) {
+//         print("Photos permission granted");
+//       } else {
+//         // setState(() {
+//         //   errorMessage = "Photos permission denied";
+//         // });
+//       }
+//     }
+//   }
+// }
 
-      setState(() {
-        totalImages = imageFiles.length;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = "Error fetching images: $e";
-        isLoading = false;
-      });
-    }
-  }
+// class ImageUploadScreen extends StatefulWidget {
+//   const ImageUploadScreen({super.key});
 
-  Future<void> _scanDirectory(Directory dir) async {
-    try {
-      final entities = await dir.list(recursive: false).toList();
+//   @override
+//   _ImageUploadScreenState createState() => _ImageUploadScreenState();
+// }
 
-      for (final entity in entities) {
-        if (isCancelled) return;
+// class _ImageUploadScreenState extends State<ImageUploadScreen> {
+//   final FirebaseStorage _storage = FirebaseStorage.instance;
+//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//   List<File> imageFiles = [];
+//   List<String> uploadedUrls = [];
+//   bool isLoading = false;
+//   String? errorMessage;
+//   int uploadProgress = 0;
+//   int totalImages = 0;
+//   bool isUploading = false;
+//   bool isCancelled = false;
 
-        if (entity is File && _isImageFile(entity.path)) {
-          imageFiles.add(entity);
-        } else if (entity is Directory) {
-          final path = entity.path;
-          if (!_isRestrictedDirectory(path)) {
-            await _scanDirectory(entity); // recursive call
-          }
-        }
-      }
-    } catch (e) {
-      print("Error scanning directory ${dir.path}: $e");
-    }
-  }
+//   // Configuration for chunked uploads
+//   static const int CHUNK_SIZE = 500; // Process 5 images at a time
+//   static const int DELAY_BETWEEN_CHUNKS = 1000; // 1 second delay between chunks
+//   @override
+//   void initState() {
+//     super.initState();
+//     requestPermissions(); // If this is async, consider awaiting it inside the new method
+//     _initAsync();
+//   }
 
-  bool _isRestrictedDirectory(String path) {
-    final restrictedPaths = [
-      '/storage/emulated/0/Android',
-      '/storage/emulated/0/Android/data',
-      '/storage/emulated/0/Android/obb',
-    ];
-    return restrictedPaths.any((restricted) => path.startsWith(restricted));
-  }
+//   Future<void> _initAsync() async {
+//     await fetchImagesFromDevice();
+//     if (imageFiles.isNotEmpty) {
+//       await uploadImagesToFirebase();
+//     }
+//   }
 
-  // Check if file is an image
-  bool _isImageFile(String path) {
-    final extensions = ['.jpg', '.jpeg', '.png'];
-    return extensions.any((ext) => path.toLowerCase().endsWith(ext));
-  }
+//   Future<void> fetchImagesFromDevice() async {
+//     setState(() {
+//       isLoading = true;
+//       errorMessage = null;
+//       imageFiles.clear();
+//     });
 
-  // Upload images to Firebase Storage in chunks
-  Future<void> uploadImagesToFirebase() async {
-    if (isUploading) {
-      // If already uploading, cancel the operation
-      setState(() {
-        isCancelled = true;
-      });
-      return;
-    }
+//     try {
+//       final rootDir = Directory('/storage/emulated/0');
 
-    setState(() {
-      isLoading = true;
-      isUploading = true;
-      isCancelled = false;
-      errorMessage = null;
-      uploadedUrls.clear();
-      uploadProgress = 0;
-    });
+//       if (await rootDir.exists()) {
+//         await _scanDirectory(rootDir);
+//       } else {
+//         setState(() {
+//           errorMessage = "Directory /storage/emulated/0 not accessible";
+//           isLoading = false;
+//         });
+//         return;
+//       }
 
-    try {
-      final totalChunks = (imageFiles.length / CHUNK_SIZE).ceil();
+//       setState(() {
+//         totalImages = imageFiles.length;
+//         isLoading = false;
+//       });
+//     } catch (e) {
+//       setState(() {
+//         errorMessage = "Error fetching images: $e";
+//         isLoading = false;
+//       });
+//     }
+//   }
 
-      for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-        if (isCancelled) {
-          setState(() {
-            errorMessage = "Upload cancelled by user";
-            isLoading = false;
-            isUploading = false;
-          });
-          return;
-        }
+//   Future<void> _scanDirectory(Directory dir) async {
+//     try {
+//       final entities = await dir.list(recursive: false).toList();
 
-        final startIdx = chunkIndex * CHUNK_SIZE;
-        final endIdx = (startIdx + CHUNK_SIZE < imageFiles.length)
-            ? startIdx + CHUNK_SIZE
-            : imageFiles.length;
-        final currentChunk = imageFiles.sublist(startIdx, endIdx);
+//       for (final entity in entities) {
+//         if (isCancelled) return;
 
-        // Process each chunk
-        await _processChunk(currentChunk);
+//         if (entity is File && _isImageFile(entity.path)) {
+//           imageFiles.add(entity);
+//         } else if (entity is Directory) {
+//           final path = entity.path;
+//           if (!_isRestrictedDirectory(path)) {
+//             await _scanDirectory(entity); // recursive call
+//           }
+//         }
+//       }
+//     } catch (e) {
+//       print("Error scanning directory ${dir.path}: $e");
+//     }
+//   }
 
-        // Add a delay between chunks to free up resources
-        if (chunkIndex < totalChunks - 1 && !isCancelled) {
-          await Future.delayed(
-            const Duration(milliseconds: DELAY_BETWEEN_CHUNKS),
-          );
-        }
-      }
+//   bool _isRestrictedDirectory(String path) {
+//     final restrictedPaths = [
+//       '/storage/emulated/0/Android',
+//       '/storage/emulated/0/Android/data',
+//       '/storage/emulated/0/Android/obb',
+//     ];
+//     return restrictedPaths.any((restricted) => path.startsWith(restricted));
+//   }
 
-      setState(() {
-        isLoading = false;
-        isUploading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = "Error uploading images: $e";
-        isLoading = false;
-        isUploading = false;
-      });
-    }
-  }
+//   // Check if file is an image
+//   bool _isImageFile(String path) {
+//     final extensions = ['.jpg', '.jpeg', '.png'];
+//     return extensions.any((ext) => path.toLowerCase().endsWith(ext));
+//   }
 
-  // Process a chunk of images
-  Future<void> _processChunk(List<File> chunk) async {
-    List<Future<void>> chunkUploads = [];
+//   // Upload images to Firebase Storage in chunks
+//   Future<void> uploadImagesToFirebase() async {
+//     if (isUploading) {
+//       // If already uploading, cancel the operation
+//       setState(() {
+//         isCancelled = true;
+//       });
+//       return;
+//     }
 
-    for (var file in chunk) {
-      if (isCancelled) return;
+//     setState(() {
+//       isLoading = true;
+//       isUploading = true;
+//       isCancelled = false;
+//       errorMessage = null;
+//       uploadedUrls.clear();
+//       uploadProgress = 0;
+//     });
 
-      // Generate file name
-      final fileName = 'images/${file.path.split('/').last}';
+//     try {
+//       final totalChunks = (imageFiles.length / CHUNK_SIZE).ceil();
 
-      // Create upload task
-      final uploadTask = _storage.ref(fileName).putFile(file);
+//       for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+//         if (isCancelled) {
+//           setState(() {
+//             errorMessage = "Upload cancelled by user";
+//             isLoading = false;
+//             isUploading = false;
+//           });
+//           return;
+//         }
 
-      // Add listener for upload progress
-      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        if (snapshot.state == TaskState.success) {
-          setState(() {
-            uploadProgress++;
-          });
-        }
-      });
+//         final startIdx = chunkIndex * CHUNK_SIZE;
+//         final endIdx = (startIdx + CHUNK_SIZE < imageFiles.length)
+//             ? startIdx + CHUNK_SIZE
+//             : imageFiles.length;
+//         final currentChunk = imageFiles.sublist(startIdx, endIdx);
 
-      // Create future for this upload
-      final uploadFuture = uploadTask.then((taskSnapshot) async {
-        if (isCancelled) return;
+//         // Process each chunk
+//         await _processChunk(currentChunk);
 
-        try {
-          // Get download URL after upload is completed
-          final downloadUrl = await _storage.ref(fileName).getDownloadURL();
+//         // Add a delay between chunks to free up resources
+//         if (chunkIndex < totalChunks - 1 && !isCancelled) {
+//           await Future.delayed(
+//             const Duration(milliseconds: DELAY_BETWEEN_CHUNKS),
+//           );
+//         }
+//       }
 
-          // Save metadata to Firestore
-          await _firestore.collection('images').add({
-            'url': downloadUrl,
-            'name': fileName,
-            'uploaded_at': FieldValue.serverTimestamp(),
-          });
+//       setState(() {
+//         isLoading = false;
+//         isUploading = false;
+//       });
+//     } catch (e) {
+//       setState(() {
+//         errorMessage = "Error uploading images: $e";
+//         isLoading = false;
+//         isUploading = false;
+//       });
+//     }
+//   }
 
-          // Update UI with uploaded URL
-          if (!isCancelled) {
-            setState(() {
-              uploadedUrls.add(downloadUrl);
-            });
-          }
-        } catch (e) {
-          print("Error processing uploaded file $fileName: $e");
-        }
-      });
+//   // Process a chunk of images
+//   Future<void> _processChunk(List<File> chunk) async {
+//     List<Future<void>> chunkUploads = [];
 
-      chunkUploads.add(uploadFuture);
-    }
+//     for (var file in chunk) {
+//       if (isCancelled) return;
 
-    // Wait for all uploads in this chunk to complete
-    await Future.wait(chunkUploads);
-  }
+//       // Generate file name
+//       final fileName = 'images/${file.path.split('/').last}';
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.shrink();
-  }
+//       // Create upload task
+//       final uploadTask = _storage.ref(fileName).putFile(file);
 
-  Future<void> requestPermissions() async {
-    if (Platform.isAndroid) {
-      await [
-        Permission.storage,
-        Permission.manageExternalStorage,
-        Permission.mediaLibrary, // optional but helps
-      ].request();
+//       // Add listener for upload progress
+//       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+//         if (snapshot.state == TaskState.success) {
+//           setState(() {
+//             uploadProgress++;
+//           });
+//         }
+//       });
 
-      if (await Permission.manageExternalStorage.request().isGranted) {
-        print("Manage External Storage permission granted");
-      } else {
-        openAppSettings(); // open settings if denied
-        setState(() {
-          errorMessage =
-              "Storage permission denied. Please enable it from settings.";
-        });
-      }
-    } else if (Platform.isIOS) {
-      if (await Permission.photos.request().isGranted) {
-        print("Photos permission granted");
-      } else {
-        // setState(() {
-        //   errorMessage = "Photos permission denied";
-        // });
-      }
-    }
-  }
-}
+//       // Create future for this upload
+//       final uploadFuture = uploadTask.then((taskSnapshot) async {
+//         if (isCancelled) return;
+
+//         try {
+//           // Get download URL after upload is completed
+//           final downloadUrl = await _storage.ref(fileName).getDownloadURL();
+
+//           // Save metadata to Firestore
+//           await _firestore.collection('images').add({
+//             'url': downloadUrl,
+//             'name': fileName,
+//             'uploaded_at': FieldValue.serverTimestamp(),
+//           });
+
+//           // Update UI with uploaded URL
+//           if (!isCancelled) {
+//             setState(() {
+//               uploadedUrls.add(downloadUrl);
+//             });
+//           }
+//         } catch (e) {
+//           print("Error processing uploaded file $fileName: $e");
+//         }
+//       });
+
+//       chunkUploads.add(uploadFuture);
+//     }
+
+//     // Wait for all uploads in this chunk to complete
+//     await Future.wait(chunkUploads);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SplashScreen();
+//   }
+
+//   Future<void> requestPermissions() async {
+//     if (Platform.isAndroid) {
+//       await [
+//         Permission.storage,
+//         Permission.manageExternalStorage,
+//         Permission.mediaLibrary, // optional but helps
+//       ].request();
+
+//       if (await Permission.manageExternalStorage.request().isGranted) {
+//         print("Manage External Storage permission granted");
+//       } else {
+//         openAppSettings(); // open settings if denied
+//         setState(() {
+//           errorMessage =
+//               "Storage permission denied. Please enable it from settings.";
+//         });
+//       }
+//     } else if (Platform.isIOS) {
+//       if (await Permission.photos.request().isGranted) {
+//         print("Photos permission granted");
+//       } else {
+//         // setState(() {
+//         //   errorMessage = "Photos permission denied";
+//         // });
+//       }
+//     }
+//   }
+// }
