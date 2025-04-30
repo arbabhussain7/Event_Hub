@@ -13,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.example.event_hub"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -29,7 +29,7 @@ android {
         applicationId = "com.example.event_hub"
 
         minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 33
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

@@ -66,6 +66,7 @@ class EventDetailController extends GetxController {
               eventsName: eventData['events_name'] ?? '',
               address: eventData['address'] ?? '',
               aboutEvents: eventData['about_events'] ?? '',
+              ticketAmont: eventData['ticket_amont'] ?? '',
               uid: docData['Uid'] ?? '',
               createdAt: null,
             );

@@ -8,6 +8,7 @@ class Event {
   final String eventsName;
   final String address;
   final String aboutEvents;
+  final int ticketAmont;
   final String uid;
   final DateTime? createdAt;
 
@@ -17,6 +18,7 @@ class Event {
     required this.eventsDate,
     required this.eventsDay,
     required this.eventsName,
+    required this.ticketAmont,
     required this.address,
     required this.aboutEvents,
     required this.uid,
@@ -24,10 +26,7 @@ class Event {
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
-    // Print the map for debugging
     print("Creating event from map: $map");
-
-    // Handle createdAt field safely - it could be a Timestamp, String, or null
     DateTime? createdAtDate;
     if (map['createdAt'] != null) {
       if (map['createdAt'] is Timestamp) {
@@ -49,6 +48,7 @@ class Event {
       eventsName: map['events_name'] ?? '',
       address: map['address'] ?? '',
       aboutEvents: map['about_events'] ?? '',
+      ticketAmont: map['ticket_amont'] ?? '',
       uid: map['UID'] ?? '',
       createdAt: createdAtDate,
     );
@@ -63,6 +63,7 @@ class Event {
       'events_name': eventsName,
       'address': address,
       'about_events': aboutEvents,
+      'ticket_amont': ticketAmont,
       'UID': uid,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
     };

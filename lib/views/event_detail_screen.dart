@@ -1,6 +1,7 @@
 import 'package:event_hub/constant/assets/assets.dart';
 import 'package:event_hub/constant/colors/colors.dart';
 import 'package:event_hub/controllers/event_detail_controller.dart';
+import 'package:event_hub/controllers/payments_controller.dart';
 import 'package:event_hub/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +11,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class EventDetailScreen extends StatelessWidget {
   EventDetailScreen({super.key});
+
   final EventDetailController eventsController =
       Get.find<EventDetailController>();
+  final PaymentsController paymentsController = Get.put(PaymentsController());
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,7 @@ class EventDetailScreen extends StatelessWidget {
         ),
       );
     }
+    final String ticketPrice = '20';
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -299,7 +303,21 @@ class EventDetailScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 12.h),
-        child: CustomButton(text: 'BUY TICKET 20\$', onPressed: () {}),
+        child: Obx(() => paymentsController.paymentLoading.value
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: AppColors.blueColor,
+              ))
+            : CustomButton(
+                text: 'BUY TICKET \$${event.ticketAmont}',
+                onPressed: () {
+                  paymentsController.makePayment(
+                    context,
+                    ticketPrice,
+                    event.uid,
+                  );
+                },
+              )),
       ),
     );
   }
