@@ -15,8 +15,7 @@ void main() async {
   await Firebase.initializeApp();
 
   try {
-    Stripe.publishableKey =
-        "pk_test_51Q1nGrFHugyQIn2Jo2F4AJUICJQAYwhiZtrZZSab0MBvLUAIChcaTt8bvfQZTL0sqBpoUnq6evjsTeslbzWpwmBb00lQXUvOxN";
+    Stripe.publishableKey = "${dotenv.env['PUBLIC_KEY']}";
     await Stripe.instance.applySettings();
   } catch (e) {
     print('Error initializing Stripe: $e');
