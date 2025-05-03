@@ -1,4 +1,4 @@
-# event_hub
+# eventhub
 
 A new Flutter project.
 

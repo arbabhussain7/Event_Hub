@@ -1,8 +1,7 @@
 import 'dart:io';
-
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/controllers/profile_controller.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';

@@ -48,4 +48,5 @@ class ImageAssets {
   static const String jazzImg = 'assets/images/jazz-img.png';
   static const String kidImg = 'assets/images/kid-img.png';
   static const String appLogoImg = 'assets/images/app-logo-img.png';
+  static const String notificationImg = 'assets/images/notification-img.png';
 }

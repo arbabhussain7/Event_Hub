@@ -3,9 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -41,8 +38,10 @@ class MapScreenController extends GetxController {
 
     location.onLocationChanged.listen((LocationData locationData) {
       if (locationData.latitude != null && locationData.longitude != null) {
-        currentLocation.value =
-            LatLng(locationData.latitude!, locationData.longitude!);
+        currentLocation.value = LatLng(
+          locationData.latitude!,
+          locationData.longitude!,
+        );
         isLoading.value = false;
       }
     });
@@ -70,25 +69,33 @@ class MapScreenController extends GetxController {
 
   Future<void> fetchCoordinatePoints(String location) async {
     try {
-      Get.snackbar('Searching', 'Looking for location: $location',
-          duration: Duration(seconds: 1));
+      Get.snackbar(
+        'Searching',
+        'Looking for location: $location',
+        duration: Duration(seconds: 1),
+      );
 
       final url = Uri.parse(
-          'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(location)}&format=json&limit=1');
+        'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(location)}&format=json&limit=1',
+      );
 
       print('Searching location: $url');
 
-      final response = await http.get(url, headers: {
-        'User-Agent': 'EventHubApp/1.0',
-        'Accept-Language': 'en-US,en;q=0.9',
-      });
+      final response = await http.get(
+        url,
+        headers: {
+          'User-Agent': 'EventHubApp/1.0',
+          'Accept-Language': 'en-US,en;q=0.9',
+        },
+      );
 
       print('Location search response: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         print(
-            'Location data: ${data.toString().substring(0, min(100, data.toString().length))}...');
+          'Location data: ${data.toString().substring(0, min(100, data.toString().length))}...',
+        );
 
         if (data.isNotEmpty) {
           final lat = double.parse(data[0]['lat']);
@@ -98,20 +105,27 @@ class MapScreenController extends GetxController {
           print('Found location: $displayName at $lat,$lon');
           destination.value = LatLng(lat, lon);
 
-          Get.snackbar('Location Found', displayName,
-              snackPosition: SnackPosition.BOTTOM,
-              duration: Duration(seconds: 2));
+          Get.snackbar(
+            'Location Found',
+            displayName,
+            snackPosition: SnackPosition.BOTTOM,
+            duration: Duration(seconds: 2),
+          );
 
           // Add a small delay to ensure the UI updates before fetching the route
           await Future.delayed(Duration(milliseconds: 500));
           await fetchRoute();
         } else {
-          Get.snackbar('Not Found',
-              'Location "$location" not found. Try a different search term.');
+          Get.snackbar(
+            'Not Found',
+            'Location "$location" not found. Try a different search term.',
+          );
         }
       } else {
-        Get.snackbar('Search Error',
-            'Error searching for location: ${response.statusCode}');
+        Get.snackbar(
+          'Search Error',
+          'Error searching for location: ${response.statusCode}',
+        );
       }
     } catch (e) {
       print('Exception during location search: $e');
@@ -124,17 +138,20 @@ class MapScreenController extends GetxController {
 
     try {
       // Fixed URL format - removed extra spaces and ensured proper formatting
-      final url = Uri.parse('http://router.project-osrm.org/route/v1/driving/'
-          '${currentLocation.value!.longitude},${currentLocation.value!.latitude};'
-          '${destination.value!.longitude},${destination.value!.latitude}'
-          '?overview=full&geometries=polyline');
+      final url = Uri.parse(
+        'http://router.project-osrm.org/route/v1/driving/'
+        '${currentLocation.value!.longitude},${currentLocation.value!.latitude};'
+        '${destination.value!.longitude},${destination.value!.latitude}'
+        '?overview=full&geometries=polyline',
+      );
 
       print('Request URL: ${url.toString()}');
 
       final response = await http.get(url);
       print('Response status: ${response.statusCode}');
       print(
-          'Response body: ${response.body.substring(0, min(100, response.body.length))}...');
+        'Response body: ${response.body.substring(0, min(100, response.body.length))}...',
+      );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -156,15 +173,12 @@ class MapScreenController extends GetxController {
     }
   }
 
-  // Function to fit map to show both current location and destination
   void fitMapToPoints() {
     if (currentLocation.value != null && destination.value != null) {
       try {
         final points = [currentLocation.value!, destination.value!];
         final latitudes = points.map((p) => p.latitude).toList();
         final longitudes = points.map((p) => p.longitude).toList();
-
-        // Calculate bounds
         final southWest = LatLng(
           latitudes.reduce((a, b) => a < b ? a : b),
           longitudes.reduce((a, b) => a < b ? a : b),
@@ -174,22 +188,21 @@ class MapScreenController extends GetxController {
           longitudes.reduce((a, b) => a > b ? a : b),
         );
 
-        // Add some padding
         final centerLat = (southWest.latitude + northEast.latitude) / 2;
         final centerLng = (southWest.longitude + northEast.longitude) / 2;
         final center = LatLng(centerLat, centerLng);
-
-        // Calculate zoom level based on distance
-        final distance = calculateDistance(southWest.latitude,
-            southWest.longitude, northEast.latitude, northEast.longitude);
+        final distance = calculateDistance(
+          southWest.latitude,
+          southWest.longitude,
+          northEast.latitude,
+          northEast.longitude,
+        );
 
         double zoom = 13;
         if (distance > 10) zoom = 10;
         if (distance > 50) zoom = 8;
         if (distance > 200) zoom = 6;
         if (distance > 500) zoom = 5;
-
-        // Move map to show both points
         mapController.move(center, zoom);
       } catch (e) {
         print('Error fitting map to points: $e');
@@ -197,20 +210,19 @@ class MapScreenController extends GetxController {
     }
   }
 
-  // Calculate distance between two points using Haversine formula
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    const R = 6371.0; // Radius of the earth in km
+    const R = 6371.0;
     final dLat = (lat2 - lat1) * (pi / 180);
     final dLon = (lon2 - lon1) * (pi / 180);
-
-    final a = sin(dLat / 2) * sin(dLat / 2) +
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(lat1 * (pi / 180)) *
             cos(lat2 * (pi / 180)) *
             sin(dLon / 2) *
             sin(dLon / 2);
 
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return R * c; // Distance in km
+    return R * c;
   }
 
   List<LatLng> _decodePolyline(String encoded) {

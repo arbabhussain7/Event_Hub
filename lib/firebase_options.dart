@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,49 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC2MkunRZXMI2Js1G2BaY4Ygsj83CWw8nA',
-    appId: '1:337599404062:web:273e5ac3bfc4689173760f',
-    messagingSenderId: '337599404062',
-    projectId: 'emart-8d623',
-    authDomain: 'emart-8d623.firebaseapp.com',
-    storageBucket: 'emart-8d623.appspot.com',
-    measurementId: 'G-EC015BWX2T',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAs_yw3e2EP24awtM9nYJ1Gq4guRxCr39k',
-    appId: '1:337599404062:android:9ff34f5a89ef2e0973760f',
-    messagingSenderId: '337599404062',
-    projectId: 'emart-8d623',
-    storageBucket: 'emart-8d623.appspot.com',
+    apiKey: 'AIzaSyDECjwlbdlP6ybHCO7zVF3OhwOu7dsT2IY',
+    appId: '1:773161997679:android:c9b4fdbeb3552c6902449a',
+    messagingSenderId: '773161997679',
+    projectId: 'coffeapp-c7c83',
+    storageBucket: 'coffeapp-c7c83.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCyExfnD3-lj27TQCK0xrxoD97ya_DyN0o',
-    appId: '1:337599404062:ios:7f107d243dfc63ed73760f',
-    messagingSenderId: '337599404062',
-    projectId: 'emart-8d623',
-    storageBucket: 'emart-8d623.appspot.com',
+    apiKey: 'AIzaSyCIrS7TqVhPJViOo127CKWtL7Xo4iRJ0ew',
+    appId: '1:773161997679:ios:5b9986f3c33da4ec02449a',
+    messagingSenderId: '773161997679',
+    projectId: 'coffeapp-c7c83',
+    storageBucket: 'coffeapp-c7c83.appspot.com',
     iosBundleId: 'com.example.eventHub',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCyExfnD3-lj27TQCK0xrxoD97ya_DyN0o',
-    appId: '1:337599404062:ios:7f107d243dfc63ed73760f',
-    messagingSenderId: '337599404062',
-    projectId: 'emart-8d623',
-    storageBucket: 'emart-8d623.appspot.com',
-    iosBundleId: 'com.example.eventHub',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC2MkunRZXMI2Js1G2BaY4Ygsj83CWw8nA',
-    appId: '1:337599404062:web:b51fb1e82015815173760f',
-    messagingSenderId: '337599404062',
-    projectId: 'emart-8d623',
-    authDomain: 'emart-8d623.firebaseapp.com',
-    storageBucket: 'emart-8d623.appspot.com',
-    measurementId: 'G-21XQZYRS2C',
   );
 }

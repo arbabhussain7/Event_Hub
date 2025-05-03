@@ -1,6 +1,6 @@
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/constant/list.dart';
-import 'package:event_hub/controllers/onbording_controller.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/constant/list.dart';
+import 'package:eventhub/controllers/onbording_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -93,8 +93,9 @@ class OnboardingScreen extends StatelessWidget {
                                   style: GoogleFonts.nunito(
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w500,
-                                    color:
-                                        AppColors.whiteColor.withOpacity(0.4),
+                                    color: AppColors.whiteColor.withOpacity(
+                                      0.4,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -106,8 +107,9 @@ class OnboardingScreen extends StatelessWidget {
                                   dotHeight: 6.h,
                                   dotWidth: 6.w,
                                   activeDotColor: AppColors.whiteColor,
-                                  dotColor:
-                                      AppColors.whiteColor.withOpacity(0.5),
+                                  dotColor: AppColors.whiteColor.withOpacity(
+                                    0.5,
+                                  ),
                                 ),
                                 onDotClicked: (index) {
                                   controller.pageController.animateToPage(

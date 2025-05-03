@@ -26,7 +26,10 @@ class Event {
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
+    // Print the map for debugging
     print("Creating event from map: $map");
+
+    // Handle createdAt field safely - it could be a Timestamp, String, or null
     DateTime? createdAtDate;
     if (map['createdAt'] != null) {
       if (map['createdAt'] is Timestamp) {
@@ -40,6 +43,18 @@ class Event {
       }
     }
 
+    // Properly handle the ticket amount as an integer
+    int ticketAmount = 0;
+    if (map['ticket_amont'] != null) {
+      if (map['ticket_amont'] is int) {
+        ticketAmount = map['ticket_amont'];
+      } else if (map['ticket_amont'] is String) {
+        ticketAmount = int.tryParse(map['ticket_amont']) ?? 0;
+      } else if (map['ticket_amont'] is double) {
+        ticketAmount = map['ticket_amont'].toInt();
+      }
+    }
+
     return Event(
       eventsTitle: map['events_title'] ?? '',
       imgUrl: map['imgUrl'] ?? '',
@@ -48,7 +63,7 @@ class Event {
       eventsName: map['events_name'] ?? '',
       address: map['address'] ?? '',
       aboutEvents: map['about_events'] ?? '',
-      ticketAmont: map['ticket_amont'] ?? '',
+      ticketAmont: ticketAmount,
       uid: map['UID'] ?? '',
       createdAt: createdAtDate,
     );

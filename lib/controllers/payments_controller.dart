@@ -1,51 +1,56 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:eventhub/views/my_booking_events.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class PaymentsController extends GetxController {
   RxBool paymentLoading = false.obs;
-
-  // IMPORTANT: Use only publishable key in client code
-  // Move this to a constants file or .env file in production
-  final String publishableKey =
-      "pk_test_51Q1nGrFHugyQIn2JR0ahzYGnLG5OZLB37WqPt8COaoFSWwKZG2QV6ZzJ7NdWvGjiISxFGjkVzGQQ9VPnV2Jjnqwu00r3QmHaLe";
-
-  // For demo purposes, we're using a cloud function URL (replace with your actual endpoint)
-  final String stripeServerUrl =
-      "https://us-central1-eventhub-12345.cloudfunctions.net/stripePaymentIntentRequest";
+  final String publishableKey = "${dotenv.env['PUBLIC_KEY']}";
+  final String secretKey = '${dotenv.env['SECRET_KEY']}';
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize Stripe in the controller
     initStripe();
   }
 
   Future<void> initStripe() async {
-    Stripe.publishableKey = publishableKey;
-    await Stripe.instance.applySettings();
+    try {
+      Stripe.publishableKey = publishableKey;
+      await Stripe.instance.applySettings();
+      log(
+        'Stripe initialized successfully with key: ${publishableKey.substring(0, 10)}...',
+      );
+    } catch (e) {
+      log('Error initializing Stripe: $e');
+    }
   }
 
   // Process payment
   Future<void> makePayment(
     BuildContext context,
     String amount,
-    String productId,
+    String eventId,
   ) async {
     try {
       paymentLoading.value = true;
 
+      log('Making payment for event: $eventId with amount: $amount');
+
       // Calculate amount in cents/smallest currency unit
-      final calculatedAmount = (double.parse(amount) * 100).round().toString();
+      final calculatedAmount = (double.parse(amount) * 100).round();
+
+      log('Calculated amount in cents: $calculatedAmount');
 
       // Create payment intent via the API
       final paymentIntentData = await _createPaymentIntent(
-        calculatedAmount,
+        calculatedAmount.toString(),
         'usd',
-        productId,
+        eventId,
       );
 
       if (paymentIntentData == null) {
@@ -54,6 +59,8 @@ class PaymentsController extends GetxController {
         return;
       }
 
+      log('Payment intent created successfully');
+
       // Configure payment sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -61,11 +68,8 @@ class PaymentsController extends GetxController {
           paymentIntentClientSecret: paymentIntentData['client_secret'],
           style: ThemeMode.light,
           appearance: const PaymentSheetAppearance(
-            colors: PaymentSheetAppearanceColors(
-              primary: Color(0xFF0000FF),
-            ),
+            colors: PaymentSheetAppearanceColors(primary: Color(0xFF0000FF)),
           ),
-          // Add this to help with the package name issue
           googlePay: const PaymentSheetGooglePay(
             merchantCountryCode: 'US',
             testEnv: true,
@@ -73,12 +77,21 @@ class PaymentsController extends GetxController {
         ),
       );
 
+      log('Payment sheet initialized');
+
       // Present payment sheet
       await Stripe.instance.presentPaymentSheet();
 
+      log('Payment completed');
+
       // If we're here, payment succeeded
       paymentLoading.value = false;
+
+      // Show success message and navigate to bookings screen
       _showSuccessSnackbar('Payment completed successfully');
+
+      // Navigate to the bookings screen
+      Get.to(() => MyBookingsScreen());
     } catch (e) {
       paymentLoading.value = false;
       log('Payment error: $e');
@@ -96,37 +109,40 @@ class PaymentsController extends GetxController {
   }
 
   // Helper method to create payment intent
+  // IMPORTANT: This is for TESTING ONLY
+  // In production, NEVER expose your secret key in the client app
   Future<Map<String, dynamic>?> _createPaymentIntent(
     String amount,
     String currency,
-    String productId,
+    String eventId,
   ) async {
     try {
-      // For demo purposes, we're using the server approach,
-      // but with a direct API call (NOT RECOMMENDED FOR PRODUCTION)
+      // FOR TESTING ONLY - Direct API call to Stripe
       final response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization':
-              'Bearer sk_test_51Q1nGrFHugyQIn2JHZlhRarixRFCOqlbsNrOZ9BdwtrVbkD5b8G66lu151uRL73zlA07SBdvd5OTo9DMV5W6Q6U500vY4cvOil',
+          'Authorization': 'Bearer $secretKey',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: {
           'amount': amount,
           'currency': currency,
           'payment_method_types[]': 'card',
-          'metadata[product_id]': productId,
-          // This might help with the security exception
-          'capture_method': 'automatic',
+          'metadata[event_id]': eventId,
+          'description': 'Event ticket purchase',
         },
       );
 
-      log('Stripe API Response: ${response.body}');
+      log('Stripe API Response Status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final responseData = jsonDecode(response.body);
+        log('Payment Intent ID: ${responseData['id']}');
+        return responseData;
       } else {
-        log('Error creating payment intent: ${response.statusCode} - ${response.body}');
+        log(
+          'Error creating payment intent: ${response.statusCode} - ${response.body}',
+        );
         return null;
       }
     } catch (e) {
@@ -143,6 +159,7 @@ class PaymentsController extends GetxController {
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(10),
+      duration: const Duration(seconds: 2),
     );
   }
 

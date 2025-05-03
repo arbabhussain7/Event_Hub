@@ -1,6 +1,5 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-import 'package:event_hub/views/bottom_naivgation_bar_screen.dart';
-import 'package:event_hub/views/onboarding_screen.dart';
+import 'package:eventhub/views/bottom_naivgation_bar_screen.dart';
+import 'package:eventhub/views/onboarding_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
