@@ -13,7 +13,7 @@
 migrate_working_dir/
 
 # Secure keys 
-*.env
+.env/
 # IntelliJ related
 *.iml
 *.ipr
