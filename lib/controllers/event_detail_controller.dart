@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_hub/models/events_detail_model.dart';
+import 'package:eventhub/models/events_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,10 +21,11 @@ class EventDetailController extends GetxController {
     try {
       isLoading(true);
       print("Starting to fetch events");
-      var eventsDoc = await FirebaseFirestore.instance
-          .collection('events')
-          .doc(eventsDocId)
-          .get();
+      var eventsDoc =
+          await FirebaseFirestore.instance
+              .collection('events')
+              .doc(eventsDocId)
+              .get();
 
       if (!eventsDoc.exists) {
         print("Events document not found");
@@ -66,6 +67,7 @@ class EventDetailController extends GetxController {
               eventsName: eventData['events_name'] ?? '',
               address: eventData['address'] ?? '',
               aboutEvents: eventData['about_events'] ?? '',
+              ticketAmont: eventData['ticket_amont'] ?? '',
               uid: docData['Uid'] ?? '',
               createdAt: null,
             );
@@ -119,26 +121,25 @@ class EventDetailController extends GetxController {
       final String eventAddress = event.address;
 
       // Construct the share message
-      final String shareText = "Join me at: $eventTitle\n\n"
+      final String shareText =
+          "Join me at: $eventTitle\n\n"
           "📅 Date: $eventDate ($eventDay)\n"
           "📍 Venue: $eventVenue\n"
           "🗺️ Address: $eventAddress\n\n"
           "Get the Event Hub app to RSVP and find more events!";
 
       // Add your app link
-      final String appLink = Platform.isAndroid
-          ? "https://play.google.com/store/apps/details?id=com.example.event_hub"
-          : "https://apps.apple.com/app/eventhub/id123456789";
+      final String appLink =
+          Platform.isAndroid
+              ? "https://play.google.com/store/apps/details?id=com.example.event_hub"
+              : "https://apps.apple.com/app/eventhub/id123456789";
 
       final String fullShareText = "$shareText\n\n$appLink";
 
       print("Sharing event: $eventTitle");
 
       // Share the event details
-      await Share.share(
-        fullShareText,
-        subject: 'Invitation: $eventTitle',
-      );
+      await Share.share(fullShareText, subject: 'Invitation: $eventTitle');
     } catch (e) {
       print("Error sharing event: $e");
       Get.snackbar(

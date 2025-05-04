@@ -1,8 +1,8 @@
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/controllers/event_detail_controller.dart';
-import 'package:event_hub/models/events_detail_model.dart';
-import 'package:event_hub/views/event_detail_screen.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/controllers/event_detail_controller.dart';
+import 'package:eventhub/models/events_detail_model.dart';
+import 'package:eventhub/views/event_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -40,11 +40,14 @@ class _EventScreenState extends State<EventScreen> {
     if (query.isEmpty) {
       filteredEvents.value = eventsController.events;
     } else {
-      filteredEvents.value = eventsController.events.where((event) {
-        return event.eventsTitle.toLowerCase().contains(query.toLowerCase()) ||
-            event.eventsName.toLowerCase().contains(query.toLowerCase()) ||
-            event.address.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+      filteredEvents.value =
+          eventsController.events.where((event) {
+            return event.eventsTitle.toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                event.eventsName.toLowerCase().contains(query.toLowerCase()) ||
+                event.address.toLowerCase().contains(query.toLowerCase());
+          }).toList();
     }
   }
 
@@ -158,34 +161,39 @@ class _EventScreenState extends State<EventScreen> {
                         child: Container(
                           padding: EdgeInsets.all(8.r),
                           decoration: BoxDecoration(
-                              color: AppColors.aWhiteColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12.r)),
+                            color: AppColors.aWhiteColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
                           child: Row(
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.r),
-                                child: event.imgUrl.isNotEmpty
-                                    ? Image.network(
-                                        event.imgUrl,
-                                        width: 90.w,
-                                        height: 111.h,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                            ImageAssets.jazzImg,
-                                            width: 90.w,
-                                            height: 111.h,
-                                            fit: BoxFit.cover,
-                                          );
-                                        },
-                                      )
-                                    : Image.asset(
-                                        ImageAssets.jazzImg,
-                                        width: 90.w,
-                                        height: 111.h,
-                                        fit: BoxFit.cover,
-                                      ),
+                                child:
+                                    event.imgUrl.isNotEmpty
+                                        ? Image.network(
+                                          event.imgUrl,
+                                          width: 90.w,
+                                          height: 111.h,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Image.asset(
+                                              ImageAssets.jazzImg,
+                                              width: 90.w,
+                                              height: 111.h,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        )
+                                        : Image.asset(
+                                          ImageAssets.jazzImg,
+                                          width: 90.w,
+                                          height: 111.h,
+                                          fit: BoxFit.cover,
+                                        ),
                               ),
                               SizedBox(width: 9.w),
                               Expanded(
@@ -217,7 +225,8 @@ class _EventScreenState extends State<EventScreen> {
                                     Row(
                                       children: [
                                         SvgPicture.asset(
-                                            ImageAssets.locationIcon),
+                                          ImageAssets.locationIcon,
+                                        ),
                                         SizedBox(width: 4.w),
                                         Expanded(
                                           child: Text(
@@ -232,10 +241,10 @@ class _EventScreenState extends State<EventScreen> {
                                           ),
                                         ),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -247,7 +256,7 @@ class _EventScreenState extends State<EventScreen> {
                   );
                 }
               }),
-            )
+            ),
           ],
         ),
       ),

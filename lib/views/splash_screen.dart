@@ -1,5 +1,5 @@
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/controllers/splash_controller.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/controllers/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -11,8 +11,6 @@ class SplashScreen extends StatelessWidget {
   final SplashScreenController controller = Get.put(SplashScreenController());
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: SvgPicture.asset(ImageAssets.appLogo)),
-    );
+    return Scaffold(body: Center(child: SvgPicture.asset(ImageAssets.appLogo)));
   }
 }

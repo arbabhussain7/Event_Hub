@@ -1,2 +1,0 @@
-E:/event_hub/android/app/.cxx/RelWithDebInfo/5f1e3e5l/x86/CMakeFiles/edit_cache.dir
-E:/event_hub/android/app/.cxx/RelWithDebInfo/5f1e3e5l/x86/CMakeFiles/rebuild_cache.dir

@@ -1,8 +1,8 @@
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/controllers/event_detail_controller.dart';
-import 'package:event_hub/models/events_detail_model.dart';
-import 'package:event_hub/views/event_detail_screen.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/controllers/event_detail_controller.dart';
+import 'package:eventhub/models/events_detail_model.dart';
+import 'package:eventhub/views/event_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,28 +25,26 @@ class AllEventsScreen extends StatelessWidget {
     if (query.isEmpty && !isFiltering.value) {
       filteredEvents.value = eventsController.events;
     } else {
-      filteredEvents.value = eventsController.events.where((event) {
-        return event.eventsTitle.toLowerCase().contains(query.toLowerCase()) ||
-            event.eventsName.toLowerCase().contains(query.toLowerCase()) ||
-            event.address.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+      filteredEvents.value =
+          eventsController.events.where((event) {
+            return event.eventsTitle.toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                event.eventsName.toLowerCase().contains(query.toLowerCase()) ||
+                event.address.toLowerCase().contains(query.toLowerCase());
+          }).toList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Initialize filtered events with all events
     if (filteredEvents.isEmpty) {
       filteredEvents.value = eventsController.events;
-
-      // Set initial search query if provided
       if (initialSearchQuery != null && initialSearchQuery!.isNotEmpty) {
         searchController.text = initialSearchQuery!;
         filterEvents(initialSearchQuery!);
       }
     }
-
-    // Listen for changes in events list
     ever(eventsController.events, (_) {
       filterEvents(searchController.text);
     });
@@ -59,8 +57,6 @@ class AllEventsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 12.h),
-
-              // Back button and title
               Row(
                 children: [
                   GestureDetector(
@@ -77,7 +73,7 @@ class AllEventsScreen extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: AppColors.blackColor,
                     ),
-                  )
+                  ),
                 ],
               ),
 
@@ -94,8 +90,9 @@ class AllEventsScreen extends StatelessWidget {
                   Container(
                     width: 1.w,
                     height: 17.h,
-                    decoration:
-                        const BoxDecoration(color: AppColors.aWhiteColor),
+                    decoration: const BoxDecoration(
+                      color: AppColors.aWhiteColor,
+                    ),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
@@ -128,27 +125,32 @@ class AllEventsScreen extends StatelessWidget {
                       isFiltering.value = !isFiltering.value;
                       filterEvents(searchController.text);
                     },
-                    child: Obx(() => Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 6.w, vertical: 4.h),
-                          decoration: BoxDecoration(
-                            color: isFiltering.value
-                                ? AppColors.aBlueColor
-                                : AppColors.blueColor,
-                            borderRadius: BorderRadius.circular(22.r),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(ImageAssets.filterIcon),
-                              SizedBox(width: 12.w),
-                              Text(
-                                'Filters',
-                                style: GoogleFonts.nunito(fontSize: 12.sp),
-                              )
-                            ],
-                          ),
-                        )),
-                  )
+                    child: Obx(
+                      () => Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isFiltering.value
+                                  ? AppColors.aBlueColor
+                                  : AppColors.blueColor,
+                          borderRadius: BorderRadius.circular(22.r),
+                        ),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(ImageAssets.filterIcon),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'Filters',
+                              style: GoogleFonts.nunito(fontSize: 12.sp),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
 
@@ -167,21 +169,18 @@ class AllEventsScreen extends StatelessWidget {
                     return const Center(child: Text('No events available'));
                   } else if (filteredEvents.isEmpty) {
                     return const Center(
-                        child: Text('No events match your search'));
+                      child: Text('No events match your search'),
+                    );
                   } else {
                     return ListView.separated(
                       itemCount: filteredEvents.length,
                       itemBuilder: (context, index) {
                         Event event = filteredEvents[index];
-
-                        // Format the date and time for display
                         String dateTime = '';
                         try {
                           final dateFormat = DateFormat('dd MMMM yyyy');
                           final date = dateFormat.parse(event.eventsDate);
                           dateTime = DateFormat('d MMM - EEE').format(date);
-
-                          // Extract time from the event day if available
                           if (event.eventsDay.contains('PM') ||
                               event.eventsDay.contains('AM')) {
                             final timeRegex = RegExp(r'\d+:\d+\s*(AM|PM)');
@@ -209,28 +208,32 @@ class AllEventsScreen extends StatelessWidget {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8.r),
-                                  child: event.imgUrl.isNotEmpty
-                                      ? Image.network(
-                                          event.imgUrl,
-                                          width: 109.w,
-                                          height: 122.h,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              ImageAssets.jazzImg,
-                                              width: 109.w,
-                                              height: 122.h,
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
-                                        )
-                                      : Image.asset(
-                                          ImageAssets.jazzImg,
-                                          width: 109.w,
-                                          height: 122.h,
-                                          fit: BoxFit.cover,
-                                        ),
+                                  child:
+                                      event.imgUrl.isNotEmpty
+                                          ? Image.network(
+                                            event.imgUrl,
+                                            width: 109.w,
+                                            height: 122.h,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return Image.asset(
+                                                ImageAssets.jazzImg,
+                                                width: 109.w,
+                                                height: 122.h,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          )
+                                          : Image.asset(
+                                            ImageAssets.jazzImg,
+                                            width: 109.w,
+                                            height: 122.h,
+                                            fit: BoxFit.cover,
+                                          ),
                                 ),
                                 SizedBox(width: 12.w),
                                 Expanded(
@@ -263,7 +266,8 @@ class AllEventsScreen extends StatelessWidget {
                                       Row(
                                         children: [
                                           SvgPicture.asset(
-                                              ImageAssets.locationIcon),
+                                            ImageAssets.locationIcon,
+                                          ),
                                           SizedBox(width: 4.w),
                                           Expanded(
                                             child: Text(
@@ -278,10 +282,10 @@ class AllEventsScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -293,7 +297,7 @@ class AllEventsScreen extends StatelessWidget {
                     );
                   }
                 }),
-              )
+              ),
             ],
           ),
         ),

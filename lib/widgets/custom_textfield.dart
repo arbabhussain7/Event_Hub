@@ -1,5 +1,5 @@
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/controllers/textfield_controller.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/controllers/textfield_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -22,8 +22,10 @@ class CustomTextField extends StatelessWidget {
   final TextInputType inputType;
   final String? Function(String?)? validator;
   final TextEditingController controller;
-  final CustomTextFieldController textFieldController =
-      Get.put(CustomTextFieldController(), tag: UniqueKey().toString());
+  final CustomTextFieldController textFieldController = Get.put(
+    CustomTextFieldController(),
+    tag: UniqueKey().toString(),
+  );
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,9 +37,10 @@ class CustomTextField extends StatelessWidget {
         final isCurrentlyObscured = textFieldController.isObscured.value;
         return TextFormField(
           style: GoogleFonts.nunito(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.blackColor),
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.blackColor,
+          ),
           validator: validator,
           controller: controller,
           obscureText: isPassword ? isCurrentlyObscured : false,
@@ -50,20 +53,22 @@ class CustomTextField extends StatelessWidget {
             ),
             hintText: text,
             hintStyle: GoogleFonts.nunito(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.greyColor),
-            suffixIcon: isPassword
-                ? GestureDetector(
-                    onTap: textFieldController.toggleVisibility,
-                    child: Icon(
-                      isCurrentlyObscured
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      size: 18,
-                    ),
-                  )
-                : null,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.greyColor,
+            ),
+            suffixIcon:
+                isPassword
+                    ? GestureDetector(
+                      onTap: textFieldController.toggleVisibility,
+                      child: Icon(
+                        isCurrentlyObscured
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        size: 18,
+                      ),
+                    )
+                    : null,
             border: InputBorder.none,
           ),
         );

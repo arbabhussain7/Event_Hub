@@ -1,15 +1,16 @@
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/controllers/auth_controller.dart';
-import 'package:event_hub/views/reset_passeword_screen.dart';
-import 'package:event_hub/views/sign_out_screen.dart';
-import 'package:event_hub/widgets/custom_button.dart';
-import 'package:event_hub/widgets/custom_textfield.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/controllers/auth_controller.dart';
+import 'package:eventhub/views/reset_passeword_screen.dart';
+import 'package:eventhub/views/sign_out_screen.dart';
+import 'package:eventhub/widgets/custom_button.dart';
+import 'package:eventhub/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
@@ -199,23 +200,29 @@ class SignInScreen extends StatelessWidget {
                               offset: const Offset(15, 0))
                         ],
                         borderRadius: BorderRadius.circular(15.r)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          ImageAssets.fbIcon,
-                        ),
-                        SizedBox(
-                          width: 15.w,
-                        ),
-                        Text(
-                          'Login with Facebook',
-                          style: GoogleFonts.nunito(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.aBlackColor),
-                        )
-                      ],
+                    child: GestureDetector(
+                      onTap: () {
+                        // Launch Facebook
+                        launchUrl(Uri.parse('https://www.facebook.com/'));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            ImageAssets.fbIcon,
+                          ),
+                          SizedBox(
+                            width: 15.w,
+                          ),
+                          Text(
+                            'Login with Facebook',
+                            style: GoogleFonts.nunito(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.aBlackColor),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(

@@ -1,7 +1,7 @@
-import 'package:event_hub/constant/assets/assets.dart';
-import 'package:event_hub/constant/colors/colors.dart';
-import 'package:event_hub/widgets/custom_button.dart';
-import 'package:event_hub/widgets/custom_textfield.dart';
+import 'package:eventhub/constant/assets/assets.dart';
+import 'package:eventhub/constant/colors/colors.dart';
+import 'package:eventhub/widgets/custom_button.dart';
+import 'package:eventhub/widgets/custom_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,37 +83,32 @@ class _ResetPassewordScreenState extends State<ResetPassewordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 17.h,
-                ),
+                SizedBox(height: 17.h),
                 GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: SvgPicture.asset(ImageAssets.backIcon)),
-                SizedBox(
-                  height: 22.h,
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: SvgPicture.asset(ImageAssets.backIcon),
                 ),
+                SizedBox(height: 22.h),
                 Text(
                   'Reset Password',
                   style: GoogleFonts.nunito(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.blackColor),
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.blackColor,
+                  ),
                 ),
-                SizedBox(
-                  height: 18.h,
-                ),
+                SizedBox(height: 18.h),
                 Text(
                   'Please enter your email address to request a password reset',
                   style: GoogleFonts.nunito(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.blackColor),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.blackColor,
+                  ),
                 ),
-                SizedBox(
-                  height: 29.h,
-                ),
+                SizedBox(height: 29.h),
                 CustomTextField(
                   text: 'abc@email.com',
                   image: ImageAssets.mailImg,
@@ -129,19 +124,17 @@ class _ResetPassewordScreenState extends State<ResetPassewordScreen> {
                     return null;
                   },
                 ),
-                SizedBox(
-                  height: 44.h,
-                ),
+                SizedBox(height: 44.h),
                 isLoading
                     ? const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.blueColor,
-                        ),
-                      )
+                      child: CircularProgressIndicator(
+                        color: AppColors.blueColor,
+                      ),
+                    )
                     : CustomButton(
-                        text: 'SEND',
-                        onPressed: sendPasswordResetEmail,
-                      )
+                      text: 'SEND',
+                      onPressed: sendPasswordResetEmail,
+                    ),
               ],
             ),
           ),

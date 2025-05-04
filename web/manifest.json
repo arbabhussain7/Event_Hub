@@ -1,6 +1,6 @@
 {
-    "name": "event_hub",
-    "short_name": "event_hub",
+    "name": "eventhub",
+    "short_name": "eventhub",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
