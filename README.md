@@ -32,13 +32,6 @@
  <img src="https://github.com/user-attachments/assets/89e608a4-afd2-43d5-819e-fd34ad3b875e" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
  <img src="https://github.com/user-attachments/assets/cb629ffb-73a6-47b3-af58-f9f00df0486a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
   </p>
-
-
-<p>
-<img src="https://github.com/user-attachments/assets/b7c88611-3b2f-4262-a585-eb470cb6c580" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
- <img src="https://github.com/user-attachments/assets/89e608a4-afd2-43d5-819e-fd34ad3b875e" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
- <img src="https://github.com/user-attachments/assets/cb629ffb-73a6-47b3-af58-f9f00df0486a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
-  </p>
 <p>
 <img src="https://github.com/user-attachments/assets/37656297-5a6b-4958-9cec-19d297392924" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
 <img src="https://github.com/user-attachments/assets/095f28a0-7d71-488e-9417-b86ed8efed07" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
