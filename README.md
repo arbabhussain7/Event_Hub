@@ -41,6 +41,7 @@
   </p>
 <p>
 <img src="https://github.com/user-attachments/assets/37656297-5a6b-4958-9cec-19d297392924" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+<img src="https://github.com/user-attachments/assets/095f28a0-7d71-488e-9417-b86ed8efed07" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
  </p>
 
 # **EventHub**
