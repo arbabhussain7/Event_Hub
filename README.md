@@ -1,5 +1,54 @@
 # **EventHub 🎉**
+<p>
+<img src="https://github.com/user-attachments/assets/e0f770ae-1b61-41ed-b43e-54428193616e" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/3d489805-1645-4b34-b133-7bc9e8475fd7" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/4ab9e70b-5f4e-41bc-9415-99dade25aafaf" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
 
+<p>
+<img src="https://github.com/user-attachments/assets/39f18a70-fe8a-4ae5-91b7-6872d544e33a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/d22a25d2-3c3e-4407-b4ea-5b63d9629ca3" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/25c7f4e7-f863-403d-b311-1e0b7800e04a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+
+<p>
+<img src="https://github.com/user-attachments/assets/9e0f8713-dcf8-48d6-a002-0b51a512c75a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/02185528-9424-4069-bba1-40d40aeae347" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/f6e7a143-f629-4d9c-b357-5f525ee3fc59" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+  
+<p>
+<img src="https://github.com/user-attachments/assets/9e0f8713-dcf8-48d6-a002-0b51a512c75a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/02185528-9424-4069-bba1-40d40aeae347" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/f6e7a143-f629-4d9c-b357-5f525ee3fc59" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+<p>
+<img src="https://github.com/user-attachments/assets/6c330fd8-85ad-483c-88e7-0196ecca174b" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/8b957c7f-a2bb-4c3e-974e-f109dadc2014" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/b4721fa8-a996-42f2-ad03-2f1e54df2dd2" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+<p>
+<img src="https://github.com/user-attachments/assets/b66c7734-34f4-4c38-aca7-226de0843926" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/9824c887-2ac2-49b1-ba2f-3cea596e15d4" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/a4a0fa20-418f-421a-b39a-102311444d19" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+<p>
+<img src="https://github.com/user-attachments/assets/b7c88611-3b2f-4262-a585-eb470cb6c580" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/89e608a4-afd2-43d5-819e-fd34ad3b875e" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/cb629ffb-73a6-47b3-af58-f9f00df0486a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+
+
+<p>
+<img src="https://github.com/user-attachments/assets/b7c88611-3b2f-4262-a585-eb470cb6c580" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/89e608a4-afd2-43d5-819e-fd34ad3b875e" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ <img src="https://github.com/user-attachments/assets/cb629ffb-73a6-47b3-af58-f9f00df0486a" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;"width="30%"> 
+  </p>
+<p>
+<img src="https://github.com/user-attachments/assets/37656297-5a6b-4958-9cec-19d297392924" alt="Image 1" style="margin-right: 10px; margin-bottom: 10px;" width="30%"> 
+ </p>
+
+# **EventHub**
 EventHub is a comprehensive event management platform designed to connect event enthusiasts with exciting happenings in Islamabad. This app offers robust event discovery, ticket booking, location services, and user management, ensuring a seamless event experience for both attendees and organizers.
 
 ## **Features**
